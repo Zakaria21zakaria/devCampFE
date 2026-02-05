@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input, Card, Alert } from "antd";
-//import { useAuth } from "../../auth/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useLocation, useNavigate } from "react-router";
 
 // const fakeLogin = (username, password) =>
 //   new Promise((resolve) => {
@@ -11,10 +12,12 @@ import { Button, Checkbox, Flex, Form, Input, Card, Alert } from "antd";
 //   });
 
 const Login = () => {
+    const navigate = useNavigate();
+const location = useLocation();
   const [form] = Form.useForm();
   const [error, setError] = useState(""); // state to hold form-level error
   const [loading, setLoading] = useState(false);
-  //const auth = useAuth();
+  const auth = useAuth();
 
   const onFinish = async (values) => {
     setError(""); // reset error on submit
@@ -51,8 +54,10 @@ const Login = () => {
         return;
       }
 
-      //auth.login(loginAccessKey);
+      auth.login(loginAccessKey);
       setLoading(false);
+      const from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again later.");

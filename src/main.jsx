@@ -11,8 +11,9 @@ import ProductDetails, {
   loader as ProductDetailsLoader,
 } from "./routes/ProductDetails.jsx";
 import Login from "./components/UserManagement/Login.jsx";
-// import { AuthProvider } from "./auth/AuthContext.jsx";
-// import RequireAuth from "./auth/RequireAuth.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import RequireAuth from "./context/RequireAuth.jsx";
+import Account from "./components/UserManagement/Account.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,9 +22,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: (
-            <ProductCatalogue />
-        ),
+        element: <ProductCatalogue />,
         loader: ProductCatalogueLoader,
       },
       {
@@ -35,14 +34,22 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
+      {
+        path: "/account",
+        element: (
+          <RequireAuth>
+            <Account />
+          </RequireAuth>
+        ),
+      },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <AuthProvider> */}
+    <AuthProvider>
       <RouterProvider router={router} />
-    {/* </AuthProvider> */}
+    </AuthProvider>
   </StrictMode>,
 );
