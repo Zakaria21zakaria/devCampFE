@@ -14,7 +14,10 @@ import Login from "./components/UserManagement/Login.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import RequireAuth from "./context/RequireAuth.jsx";
 import Account from "./components/UserManagement/Account.jsx";
-
+import Cart from "./components/Cart.jsx";
+import KycStart from "./routes/KYC/KycStart.jsx";
+import ProofOfResidence from "./routes/KYC/ProofOfResidence.jsx";
+import SelfieUpload from "./routes/KYC/SelfieUpload.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -41,6 +44,32 @@ const router = createBrowserRouter([
             <Account />
           </RequireAuth>
         ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <RequireAuth>
+            <Cart />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/kyc",
+
+        children: [
+          {
+            index: true,
+            element: <KycStart />,
+          },
+          {
+            path: "residence",
+            element: <ProofOfResidence />,
+          },
+          {
+            path: "selfie",
+            element: <SelfieUpload />,
+          },
+        ],
       },
     ],
   },

@@ -54,7 +54,12 @@ const location = useLocation();
         return;
       }
 
-      auth.login(loginAccessKey);
+      //TODO: GET user details from (GetCustomerbyEmail)
+      const user = {
+        name: 'username'
+      }
+      auth.login(loginAccessKey,user);
+      
       setLoading(false);
       const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });

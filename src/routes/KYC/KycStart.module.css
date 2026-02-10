@@ -1,0 +1,30 @@
+/* KycStart.module.css */
+
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+}
+
+.card {
+  width: 480px;
+}
+
+.actions {
+  margin-top: 32px;
+  width: 100%;
+}
+
+.buttonContent {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.completedButton:disabled {
+  background-color: #52c41a !important;
+  border-color: #52c41a !important;
+  color: #fff !important;
+  opacity: 1 !important;
+}

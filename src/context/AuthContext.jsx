@@ -23,22 +23,26 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [loginAccessKey, setLoginAccessKey] = useState(() => loadLoginAccessKey());
+  const [user, setUser] = useState(null)
 
-  const login = (newLoginAccessKey) => {
+  const login = (newLoginAccessKey, user) => {
     setLoginAccessKey(newLoginAccessKey);
     saveLoginAccessKey(newLoginAccessKey);
+    setUser(user);
     console.log('we are here');
   };
 
   const logout = () => {
     setLoginAccessKey(null);
     saveLoginAccessKey(null);
+    setUser(null)
   };
 
   const value = useMemo(
     () => ({
       loginAccessKey,
       isAuthenticated: Boolean(loginAccessKey),
+      user,
       login,
       logout,
       bearerAuthHeader: loginAccessKey ? `Bearer ${loginAccessKey}` : null,
@@ -50,57 +54,7 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
+  const ctx = useContext(AuthContext); //you can use 'use' instead of 'usecontext' in react 19 or higher
   if (!ctx) throw new Error("useAuth must be used within <AuthProvider>");
   return ctx;
 }
-
-
-// import React, { createContext, useContext, useState, useEffect } from 'react';
-
-// const AuthContext = createContext(null);
-
-// export const AuthProvider = ({ children }) => {
-//   const [token, setToken] = useState(() => localStorage.getItem('token'));
-//   const [isAuthenticated, setIsAuthenticated] = useState(!!token);
-
-//   useEffect(() => {
-//     if (token) {
-//       localStorage.setItem('token', token);
-//       setIsAuthenticated(true);
-//     } else {
-//       localStorage.removeItem('token');
-//       setIsAuthenticated(false);
-//     }
-//   }, [token]);
-
-//   const login = (newToken) => {
-//     setToken(newToken);
-//   };
-
-//   const logout = () => {
-//     setToken(null);
-//   };
-
-//   return (
-//     <AuthContext.Provider
-//       value={{
-//         token,
-//         isAuthenticated,
-//         login,
-//         logout,
-//       }}
-//     >
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// // Custom hook (IMPORTANT)
-// export const useAuth = () => {
-//   const context = useContext(AuthContext);
-//   if (!context) {
-//     throw new Error('useAuth must be used within AuthProvider');
-//   }
-//   return context;
-// };
