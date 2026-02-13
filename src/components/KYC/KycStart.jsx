@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Card, Button, Space, Typography } from "antd";
 import {
   HomeOutlined,
@@ -7,26 +6,13 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import classes from "./KycStart.module.css";
+import { useKyc } from "../../context/KycContext.jsx";
 
 const { Title, Text } = Typography;
 
 export default function KycStart() {
   const navigate = useNavigate();
-  const [proofOfResidenceUploaded, setProofOfResidenceUploaded] =
-    useState(false);
-  const [selfieUploaded, setSelfieUploaded] = useState(false);
-
-  useEffect(() => {
-    try {
-      setProofOfResidenceUploaded(
-        localStorage.getItem("kyc.proofOfResidenceUploaded") === "true",
-      );
-      setSelfieUploaded(localStorage.getItem("kyc.selfieUploaded") === "true");
-    } catch {
-      setProofOfResidenceUploaded(false);
-      setSelfieUploaded(false);
-    }
-  }, []);
+  const { proofOfResidenceUploaded, selfieUploaded } = useKyc();
 
   const identityVerified = proofOfResidenceUploaded && selfieUploaded;
 

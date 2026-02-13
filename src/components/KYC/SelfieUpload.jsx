@@ -3,13 +3,15 @@ import { Card, Button, Space, Typography, Upload, message } from "antd";
 import { CameraOutlined, UploadOutlined } from "@ant-design/icons";
 import Webcam from "react-webcam";
 import { ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../firebase";
+import { storage } from "../../firebase.js";
 import { useNavigate } from "react-router";
+import { useKyc } from "../../context/KycContext.jsx";
 
 const { Title, Text } = Typography;
 
 export default function SelfieUpload() {
   const navigate = useNavigate();
+  const { setSelfieUploaded } = useKyc();
   const webcamRef = useRef(null);
   const [showCamera, setShowCamera] = useState(false);
   const [fileList, setFileList] = useState([]);
@@ -58,11 +60,7 @@ export default function SelfieUpload() {
       await uploadBytes(storageRef, selectedFile);
       message.success("Selfie uploaded successfully");
 
-      try {
-        localStorage.setItem("kyc.selfieUploaded", "true");
-      } catch {
-        // ignore
-      }
+      setSelfieUploaded(true);
 
       setFileList([]);
       navigate("/kyc", { replace: true });

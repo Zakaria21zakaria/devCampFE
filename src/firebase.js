@@ -1,7 +1,7 @@
 // src/firebaseConfig.js
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, logEvent } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -25,4 +25,4 @@ const analytics = getAnalytics(app);
 
 const storage = getStorage(app);
 
-export { storage };
+export { storage, analytics, logEvent };

@@ -5,19 +5,21 @@ import { RouterProvider } from "react-router/dom";
 import { createBrowserRouter } from "react-router";
 import ProductCatalogue, {
   loader as ProductCatalogueLoader,
-} from "./routes/ProductCatalogue.jsx";
+} from "./components/Product/ProductCatalogue.jsx";
 import RootLayout from "./routes/rootLayout.jsx";
 import ProductDetails, {
   loader as ProductDetailsLoader,
-} from "./routes/ProductDetails.jsx";
+} from "./components/Product/ProductDetails.jsx";
 import Login from "./components/UserManagement/Login.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import RequireAuth from "./context/RequireAuth.jsx";
 import Account from "./components/UserManagement/Account.jsx";
 import Cart from "./components/Cart.jsx";
-import KycStart from "./routes/KYC/KycStart.jsx";
-import ProofOfResidence from "./routes/KYC/ProofOfResidence.jsx";
-import SelfieUpload from "./routes/KYC/SelfieUpload.jsx";
+import KycStart from "./components/KYC/KycStart.jsx";
+import ProofOfResidence from "./components/KYC/ProofOfResidence.jsx";
+import SelfieUpload from "./components/KYC/SelfieUpload.jsx";
+import Register from "./components/UserManagement/Register.jsx";
+import { KycProvider } from "./context/KycContext.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
       },
       {
         path: "/account",
@@ -78,7 +84,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <KycProvider>
+        <RouterProvider router={router} />
+      </KycProvider>
     </AuthProvider>
   </StrictMode>,
 );

@@ -3,6 +3,9 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input, Card, Alert } from "antd";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useLocation, useNavigate } from "react-router";
+import classes from "./Login.module.css";
+import { login as loginApi } from "../../../api/usermanagement.js";
+import { NavLink } from "react-router";
 
 // const fakeLogin = (username, password) =>
 //   new Promise((resolve) => {
@@ -23,36 +26,10 @@ const location = useLocation();
     setError(""); // reset error on submit
     setLoading(true);
     try {
-      // Create the Basic Auth header
-      const credentials = btoa(`${values.username}:${values.password}`); // base64 encode
-      const response = await fetch("/v1/token", {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${credentials}`,
-        },
+      const { loginAccessKey } = await loginApi({
+        username: values.username,
+        password: values.password,
       });
-
-      let data = null;
-      try {
-        data = await response.json();
-      } catch {
-        data = null;
-      }
-
-      if (!response.ok) {
-        setError(data?.errorMessage || "Invalid username or password");
-        setLoading(false);
-        return;
-      }
-
-      const isSuccess = data?.success === true || data?.success === "true" || data?.success === "SUCCESS";
-      const loginAccessKey = data?.loginAccessKey;
-
-      if (!isSuccess || !loginAccessKey) {
-        setError(data?.errorMessage || "Login failed");
-        setLoading(false);
-        return;
-      }
 
       //TODO: GET user details from (GetCustomerbyEmail)
       const user = {
@@ -65,19 +42,19 @@ const location = useLocation();
       navigate(from, { replace: true });
     } catch (err) {
       console.error(err);
-      setError("Something went wrong. Please try again later.");
+      setError(err?.message || "Something went wrong. Please try again later.");
       setLoading(false);
     }
   };
 
   return (
-    <Flex justify="center" align="center" style={{ minHeight: "100vh" }}>
-      <Card style={{ width: 420 }}>
+    <Flex justify="center" align="center" className={classes.container}>
+      <Card className={classes.card}>
         {error && (
           <Alert
             type="error"
             title={error}
-            style={{ marginBottom: 16 }}
+            className={classes.errorAlert}
             closable
             showIcon
           />
@@ -90,19 +67,20 @@ const location = useLocation();
           layout="vertical"
         >
           <Form.Item
-            label="Username"
+            // label="Username"
             name="username"
             rules={[{ required: true, message: "Please input your Username!" }]}
+            
           >
-            <Input size="large" prefix={<UserOutlined />} />
+            <Input size="large" prefix={<UserOutlined />} placeholder="Username" />
           </Form.Item>
 
           <Form.Item
-            label="Password"
+            // label="Password"
             name="password"
             rules={[{ required: true, message: "Please input your Password!" }]}
           >
-            <Input.Password size="large" prefix={<LockOutlined />} />
+            <Input.Password size="large" prefix={<LockOutlined />} placeholder="Password" />
           </Form.Item>
 
           <Form.Item>
@@ -118,8 +96,8 @@ const location = useLocation();
             <Button size="large" block type="primary" htmlType="submit" loading={loading}>
               Log in
             </Button>
-            <div style={{ marginTop: 12 }}>
-              or <a href="">Register now!</a>
+            <div className={classes.registerHint}>
+              or <NavLink to="/register">Register now!</NavLink>
             </div>
           </Form.Item>
         </Form>

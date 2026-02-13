@@ -1,5 +1,5 @@
-import { getProducts } from "../../api/products";
-import Product from "../components/Product/Product";
+import { getProducts } from "../../../api/products";
+import Product from "./Product";
 import classes from "./ProductCatalogue.module.css";
 import { useLoaderData } from "react-router";
  

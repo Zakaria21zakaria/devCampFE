@@ -2,14 +2,16 @@ import { useState } from "react";
 import { Card, Button, Space, Typography, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../firebase";
+import { storage } from "../../firebase.js";
 import { useNavigate } from "react-router";
 import classes from "./ProofOfResidence.module.css";
+import { useKyc } from "../../context/KycContext.jsx";
 
 const { Title, Text } = Typography;
 
 export default function ProofOfResidence() {
   const navigate = useNavigate();
+  const { setProofOfResidenceUploaded } = useKyc();
 
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -32,11 +34,7 @@ export default function ProofOfResidence() {
 
       message.success("File uploaded successfully");
 
-      try {
-        localStorage.setItem("kyc.proofOfResidenceUploaded", "true");
-      } catch {
-        // ignore
-      }
+      setProofOfResidenceUploaded(true);
 
       // Clear state and Upload UI
       setFile(null);
@@ -62,6 +60,8 @@ export default function ProofOfResidence() {
         <Space orientation="vertical" size="large" className={classes.actions}>
           {/* Upload photo OR PDF */}
           <Upload
+                                style={{ width: "100%" }}
+
             className={classes.upload}
             beforeUpload={(file) => {
               setFile(file);

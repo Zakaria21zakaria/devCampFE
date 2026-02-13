@@ -1,0 +1,15 @@
+.container {
+	min-height: 100vh;
+}
+
+.card {
+	width: 420px;
+}
+
+.errorAlert {
+	margin-bottom: 16px;
+}
+
+.registerHint {
+	margin-top: 12px;
+}
