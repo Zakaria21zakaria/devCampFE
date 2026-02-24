@@ -6,7 +6,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import classes from "./KycStart.module.css";
-import { useKyc } from "../../context/KycContext.jsx";
+import { useKyc } from "../../context/KycContext.js";
 
 const { Title, Text } = Typography;
 

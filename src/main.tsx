@@ -5,21 +5,21 @@ import { RouterProvider } from "react-router/dom";
 import { createBrowserRouter } from "react-router";
 import ProductCatalogue, {
   loader as ProductCatalogueLoader,
-} from "./components/Product/ProductCatalogue.jsx";
-import RootLayout from "./routes/rootLayout.jsx";
+} from "./components/Product/ProductCatalogue.tsx";
+import RootLayout from "./routes/RootLayout.tsx";
 import ProductDetails, {
   loader as ProductDetailsLoader,
-} from "./components/Product/ProductDetails.jsx";
-import Login from "./components/UserManagement/Login.jsx";
-import { AuthProvider } from "./context/AuthContext.jsx";
-import RequireAuth from "./context/RequireAuth.jsx";
-import Account from "./components/UserManagement/Account.jsx";
-import Cart from "./components/Cart.jsx";
-import KycStart from "./components/KYC/KycStart.jsx";
-import ProofOfResidence from "./components/KYC/ProofOfResidence.jsx";
-import SelfieUpload from "./components/KYC/SelfieUpload.jsx";
-import Register from "./components/UserManagement/Register.jsx";
-import { KycProvider } from "./context/KycContext.jsx";
+} from "./components/Product/ProductDetails.tsx";
+import Login from "./components/UserManagement/Login.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
+import RequireAuth from "./context/RequireAuth.tsx";
+import Account from "./components/UserManagement/Account.tsx";
+import Cart from "./components/Cart.tsx";
+import KycStart from "./components/KYC/KycStart.tsx";
+import ProofOfResidence from "./components/KYC/ProofOfResidence.tsx";
+import SelfieUpload from "./components/KYC/SelfieUpload.tsx";
+import Register from "./components/UserManagement/Register.tsx";
+import { KycProvider } from "./context/KycContext.js";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
       <KycProvider>

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import MainHeader from "../components/MainHeader";
+import MainHeader from "../components/MainHeader.tsx";
 
 export default function RootLayout(){
     return (

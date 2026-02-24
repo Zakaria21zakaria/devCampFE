@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 
 const STORAGE_KEY = "devcamp.loginAccessKey";
 
-function loadLoginAccessKey() {
+function loadLoginAccessKey(): string | null {
   try {
     return localStorage.getItem(STORAGE_KEY);
   } catch {
@@ -10,7 +11,7 @@ function loadLoginAccessKey() {
   }
 }
 
-function saveLoginAccessKey(value) {
+function saveLoginAccessKey(value: string | null) {
   try {
     if (value) localStorage.setItem(STORAGE_KEY, value);
     else localStorage.removeItem(STORAGE_KEY);
@@ -19,30 +20,37 @@ function saveLoginAccessKey(value) {
   }
 }
 
-const AuthContext = createContext(null);
+export type AuthContextValue = {
+  loginAccessKey: string | null;
+  isAuthenticated: boolean;
+  login: (newLoginAccessKey: string) => void;
+  logout: () => void;
+  bearerAuthHeader: string | null;
+};
 
-export function AuthProvider({ children }) {
-  const [loginAccessKey, setLoginAccessKey] = useState(() => loadLoginAccessKey());
-  const [user, setUser] = useState(null)
+const AuthContext = createContext<AuthContextValue | null>(null);
 
-  const login = (newLoginAccessKey, user) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [loginAccessKey, setLoginAccessKey] = useState<string | null>(() => loadLoginAccessKey());
+  // const [user, setUser] = useState(null)
+
+  const login = (newLoginAccessKey: string) => {
     setLoginAccessKey(newLoginAccessKey);
     saveLoginAccessKey(newLoginAccessKey);
-    setUser(user);
-    console.log('we are here');
+    // setUser(user);
   };
 
   const logout = () => {
     setLoginAccessKey(null);
     saveLoginAccessKey(null);
-    setUser(null)
+    // setUser(null)
   };
 
   const value = useMemo(
-    () => ({
+    (): AuthContextValue => ({
       loginAccessKey,
       isAuthenticated: Boolean(loginAccessKey),
-      user,
+      // user,
       login,
       logout,
       bearerAuthHeader: loginAccessKey ? `Bearer ${loginAccessKey}` : null,

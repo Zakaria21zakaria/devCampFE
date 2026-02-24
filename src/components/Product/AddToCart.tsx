@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import classes from "./AddToCart.module.css";
+import type { Product as ProductType } from "../../types/product";
 
-export default function AddToCart({ product }) {
+export default function AddToCart({ product }: { product: ProductType }) {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 

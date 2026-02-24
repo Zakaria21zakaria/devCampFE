@@ -2,9 +2,10 @@ import { getProducts } from "../../../api/products";
 import Product from "./Product";
 import classes from "./ProductCatalogue.module.css";
 import { useLoaderData } from "react-router";
+import type { Product as ProductType } from "../../types/product";
  
 export default function ProductCatalogue() {
-  const products = useLoaderData();
+  const products = useLoaderData() as ProductType[];
 
   return (
     <div className={classes.catalogue}>

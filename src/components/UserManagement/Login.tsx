@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input, Card, Alert } from "antd";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import { useLocation, useNavigate } from "react-router";
 import classes from "./Login.module.css";
-import { login as loginApi } from "../../../api/usermanagement.js";
+import { login as loginApi } from "../../../api/usermanagement";
 import { NavLink } from "react-router";
 
 // const fakeLogin = (username, password) =>
@@ -22,7 +22,13 @@ const location = useLocation();
   const [loading, setLoading] = useState(false);
   const auth = useAuth();
 
-  const onFinish = async (values) => {
+  type LoginFormValues = {
+	username: string;
+	password: string;
+	remember?: boolean;
+  };
+
+  const onFinish = async (values: LoginFormValues) => {
     setError(""); // reset error on submit
     setLoading(true);
     try {
@@ -31,18 +37,14 @@ const location = useLocation();
         password: values.password,
       });
 
-      //TODO: GET user details from (GetCustomerbyEmail)
-      const user = {
-        name: 'username'
-      }
-      auth.login(loginAccessKey,user);
+      auth.login(loginAccessKey);
       
       setLoading(false);
       const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err?.message || "Something went wrong. Please try again later.");
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again later.");
       setLoading(false);
     }
   };

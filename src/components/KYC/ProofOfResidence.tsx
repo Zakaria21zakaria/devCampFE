@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Card, Button, Space, Typography, Upload, message } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../firebase.js";
+import { storage } from "../../firebase";
 import { useNavigate } from "react-router";
 import classes from "./ProofOfResidence.module.css";
-import { useKyc } from "../../context/KycContext.jsx";
+import { useKyc } from "../../context/KycContext";
 
 const { Title, Text } = Typography;
 
@@ -13,9 +14,11 @@ export default function ProofOfResidence() {
   const navigate = useNavigate();
   const { setProofOfResidenceUploaded } = useKyc();
 
-  const [file, setFile] = useState(null);
+  type BeforeUploadFile = Parameters<NonNullable<UploadProps["beforeUpload"]>>[0];
+
+  const [file, setFile] = useState<BeforeUploadFile | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [fileList, setFileList] = useState([]); // <-- control the Upload list
+  const [fileList, setFileList] = useState<UploadFile[]>([]); // control the Upload list
 
   const handleUpload = async () => {
     if (!file) {
@@ -41,7 +44,7 @@ export default function ProofOfResidence() {
       setFileList([]);
 
       navigate("/kyc", { replace: true });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       message.error("Upload failed");
     } finally {
@@ -60,12 +63,19 @@ export default function ProofOfResidence() {
         <Space orientation="vertical" size="large" className={classes.actions}>
           {/* Upload photo OR PDF */}
           <Upload
-                                style={{ width: "100%" }}
+            style={{ width: "100%" }}
 
             className={classes.upload}
-            beforeUpload={(file) => {
-              setFile(file);
-              setFileList([file]); // keep Upload list in sync
+            beforeUpload={(selectedFile) => {
+              setFile(selectedFile);
+              setFileList([
+                {
+                  uid: String(Date.now()),
+                  name: selectedFile.name,
+                  status: "done",
+                  originFileObj: selectedFile,
+                },
+              ]);
               return false; // prevent auto upload; we upload on "Submit"
             }}
             fileList={fileList}

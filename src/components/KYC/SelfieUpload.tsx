@@ -1,20 +1,21 @@
 import { useRef, useState } from "react";
 import { Card, Button, Space, Typography, Upload, message } from "antd";
+import type { UploadFile } from "antd";
 import { CameraOutlined, UploadOutlined } from "@ant-design/icons";
 import Webcam from "react-webcam";
 import { ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../firebase.js";
+import { storage } from "../../firebase";
 import { useNavigate } from "react-router";
-import { useKyc } from "../../context/KycContext.jsx";
+import { useKyc } from "../../context/KycContext";
 
 const { Title, Text } = Typography;
 
 export default function SelfieUpload() {
   const navigate = useNavigate();
   const { setSelfieUploaded } = useKyc();
-  const webcamRef = useRef(null);
+  const webcamRef = useRef<Webcam | null>(null);
   const [showCamera, setShowCamera] = useState(false);
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
 
   const captureSelfie = async () => {
@@ -36,7 +37,7 @@ export default function SelfieUpload() {
         uid: String(Date.now()),
         name: file.name,
         status: "done",
-        originFileObj: file,
+        originFileObj: file as unknown as UploadFile["originFileObj"],
         thumbUrl: screenshot,
       },
     ]);
@@ -45,7 +46,7 @@ export default function SelfieUpload() {
   };
 
   const handleUpload = async () => {
-    const selectedFile = fileList?.[0]?.originFileObj;
+    const selectedFile = fileList[0]?.originFileObj as File | undefined;
     if (!selectedFile) {
       message.warning("Please attach or capture a selfie first");
       return;
@@ -64,7 +65,7 @@ export default function SelfieUpload() {
 
       setFileList([]);
       navigate("/kyc", { replace: true });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       message.error("Upload failed");
     } finally {
@@ -112,7 +113,7 @@ export default function SelfieUpload() {
 
           {/* Upload photo */}
           <Upload
-                      style={{ width: "100%" }}
+            style={{ width: "100%" }}
 
             beforeUpload={() => false}
             accept="image/*"

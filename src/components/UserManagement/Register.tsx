@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import {
   Alert,
   Button,
@@ -15,10 +15,10 @@ import {
   LockOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import classes from "./Register.module.css";
-import { logEvent, analytics } from "../../firebase.js";
-import { createProfile, createUser, login } from "../../../api/usermanagement.js";
+import { logEvent, analytics } from "../../firebase";
+import { createProfile, createUser, login } from "../../../api/usermanagement";
 
 const { Title, Text } = Typography;
 
@@ -32,7 +32,7 @@ export default function Register() {
   const [profileForm] = Form.useForm();
 
   const [current, setCurrent] = useState(0);
-  const [devCode, setDevCode] = useState(null);
+  const [devCode, setDevCode] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -111,7 +111,7 @@ useEffect(() => {
   };
 
   // Step 1 submit
-  const onEmailFinish = ({ email }) => {
+  const onEmailFinish = ({ email }: { email: string }) => {
     setWizardData((d) => ({ ...d, email }));
 
     const nextCode = String(Math.floor(100000 + Math.random() * 900000));
@@ -125,7 +125,7 @@ useEffect(() => {
   };
 
   // Step 2 submit
-  const onCodeFinish = ({ verificationCode }) => {
+  const onCodeFinish = ({ verificationCode }: { verificationCode: string }) => {
     setWizardData((d) => ({ ...d, verificationCode }));
 
     if (!devCode) {
@@ -142,7 +142,7 @@ useEffect(() => {
   };
 
   // Step 3 submit
-  const onPasswordFinish = ({ password }) => {
+  const onPasswordFinish = ({ password }: { password: string }) => {
     setWizardData((d) => ({ ...d, password }));
     profileForm.setFieldsValue({
       firstName: wizardData.firstName,
@@ -153,7 +153,15 @@ useEffect(() => {
   };
 
   // Step 4 submit (final)
-  const onProfileFinish = async ({ firstName, lastName, idNumber }) => {
+  const onProfileFinish = async ({
+	firstName,
+	lastName,
+	idNumber,
+  }: {
+	firstName: string;
+	lastName: string;
+	idNumber: string;
+  }) => {
     const email = wizardData.email?.trim();
     const password = wizardData.password;
 
@@ -167,7 +175,7 @@ useEffect(() => {
 
       // 2) Login to get token
       const { loginAccessKey } = await login({ username: email, password });
-      auth.login(loginAccessKey, { email, firstName, lastName });
+      auth.login(loginAccessKey);
 
       // 3) Create profile
       await createProfile({ loginAccessKey, email, firstName, lastName, idNumber });
@@ -181,9 +189,9 @@ useEffect(() => {
         });
       }
       navigate("/kyc", { replace: true });
-    } catch (e) {
+    } catch (e: unknown) {
       console.error(e);
-      setError(e?.message || "Something went wrong. Please try again.");
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -374,7 +382,7 @@ useEffect(() => {
                 </Form.Item>
 
                 <Space orientation="vertical" size={2} style={{ width: "100%" }}>
-                  <Text type="default">Password must contain at least:</Text>
+                  <Text>Password must contain at least:</Text>
                   
                   <Text
                     type={
